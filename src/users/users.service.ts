@@ -1,26 +1,42 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { User, UserDocument } from './entities/user.entity';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
-  }
+    constructor(
+        @InjectModel(User.name) private userModel: Model<UserDocument>,
+    ) {}
 
-  findAll() {
-    return `This action returns all users`;
-  }
+    async create(createUserDto: CreateUserDto) {
+        const existingUser = await this.userModel.findOne({
+            email: createUserDto.email,
+        });
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
+        if (existingUser) {
+            throw new ConflictException('User with this email already exists');
+        }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
+        const user = await this.userModel.create(createUserDto);
+        return 'hi';
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
-  }
+    findAll() {
+        return `This action returns all users`;
+    }
+
+    findOne(id: number) {
+        return `This action returns a #${id} user`;
+    }
+
+    update(id: number, updateUserDto: UpdateUserDto) {
+        return `This action updates a #${id} user`;
+    }
+
+    remove(id: number) {
+        return `This action removes a #${id} user`;
+    }
 }
