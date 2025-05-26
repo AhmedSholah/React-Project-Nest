@@ -43,9 +43,12 @@ export class UsersService {
     }
 
     async findOne(username: string) {
-        const user = await this.userModel.findOne({ username });
+        const user = await this.userModel
+            .findOne({ username })
+            .select('+password');
+
         if (!user) {
-            throw new UnauthorizedException('unauthorized');
+            throw new UnauthorizedException();
         }
         return user;
     }

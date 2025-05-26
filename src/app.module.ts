@@ -11,7 +11,7 @@ import { ConfigModule } from '@nestjs/config';
         ConfigModule.forRoot({ isGlobal: true }),
         MongooseModule.forRoot(process.env.DB_CONNECTION_STRING!),
         UsersModule,
-        AuthModule,
+        // AuthModule,
     ],
     controllers: [AppController],
     providers: [AppService],
