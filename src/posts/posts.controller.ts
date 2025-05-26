@@ -8,11 +8,13 @@ import {
     Delete,
     UseInterceptors,
     UploadedFiles,
+    Req,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { Request } from 'express';
 
 @Controller('posts')
 export class PostsController {
@@ -22,9 +24,10 @@ export class PostsController {
     @UseInterceptors(FilesInterceptor('files'))
     create(
         @Body() createPostDto: CreatePostDto,
+        @Req() request: Request,
         @UploadedFiles() files: Array<Express.Multer.File>,
     ) {
-        return this.postsService.create(createPostDto, files);
+        return this.postsService.create(request, createPostDto, files);
     }
 
     @Get()

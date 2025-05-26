@@ -12,7 +12,10 @@ import {
 } from 'class-validator';
 import mongoose from 'mongoose';
 
-class MediaItemDto {
+export class MediaItemDto {
+    @IsString()
+    name: string;
+
     @IsUrl()
     url: string;
 
@@ -39,7 +42,8 @@ export class CreatePostDto {
 
     @IsOptional()
     @IsArray()
-    @ValidateNested({ each: true })
-    @Type(() => MediaItemDto)
-    media: MediaItemDto[];
+    // @ValidateNested({ each: true })
+    // @Type(() => MediaItemDto)
+    // media: MediaItemDto[];
+    media: any;
 }

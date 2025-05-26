@@ -5,12 +5,25 @@ import {
     UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from '../auth.service';
+import { Reflector } from '@nestjs/core';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
-    constructor(private readonly authService: AuthService) {}
+    private readonly reflector: Reflector;
+    constructor(private readonly authService: AuthService) {
+        this.reflector = new Reflector();
+    }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
+        const isPublic = this.reflector.getAllAndOverride('isPublic', [
+            context.getHandler(),
+            context.getClass(),
+        ]);
+
+        if (isPublic) {
+            return true;
+        }
+
         const request = context.switchToHttp().getRequest();
         const cookie = request.cookies;
 

@@ -5,6 +5,7 @@ import {
     HttpStatus,
     Post,
     Res,
+    SetMetadata,
     UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -13,11 +14,13 @@ import { LoginAuthDto } from './dto/login-auth.dto';
 import { Response } from 'express';
 import { ApiResponse } from 'src/types/api-response';
 import { JwtAuthGuard } from './guards/jwt.guard';
+import { PublicEndpoint } from './PublicEndpoint';
 
 @Controller('auth')
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
+    @PublicEndpoint()
     @Post('register')
     async register(
         @Body() createUserDto: CreateUserDto,
@@ -33,12 +36,13 @@ export class AuthController {
         });
 
         return {
-            message: 'success',
-            statusCode: 200,
+            success: true,
+            message: 'User registered successfully',
             data: null,
         };
     }
 
+    @PublicEndpoint()
     @Post('login')
     @HttpCode(HttpStatus.OK)
     async login(
@@ -55,8 +59,8 @@ export class AuthController {
         });
 
         return {
-            message: 'success',
-            statusCode: 200,
+            success: true,
+            message: 'User logged in successfully',
             data: null,
         };
     }

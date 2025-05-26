@@ -15,7 +15,7 @@ import { PostsModule } from './posts/posts.module';
         UsersModule,
         CommentsModule,
         PostsModule,
-        // AuthModule,
+        AuthModule,
     ],
     controllers: [AppController],
     providers: [AppService],
