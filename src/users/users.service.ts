@@ -1,4 +1,9 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+    ConflictException,
+    Injectable,
+    NotFoundException,
+    UnauthorizedException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -12,24 +17,37 @@ export class UsersService {
     ) {}
 
     async create(createUserDto: CreateUserDto) {
-        const existingUser = await this.userModel.findOne({
+        const existingUserEmail: any = await this.userModel.findOne({
             email: createUserDto.email,
         });
+        const existUsername: any = await this.userModel.findOne({
+            username: createUserDto.username,
+        });
 
-        if (existingUser) {
+        if (existingUserEmail) {
             throw new ConflictException('User with this email already exists');
+        }
+        if (existUsername) {
+            throw new ConflictException(
+                'User with this username already exists',
+            );
         }
 
         const user = await this.userModel.create(createUserDto);
-        return 'hi';
+
+        return user;
     }
 
     findAll() {
         return `This action returns all users`;
     }
 
-    findOne(id: number) {
-        return `This action returns a #${id} user`;
+    async findOne(username: string) {
+        const user = await this.userModel.findOne({ username });
+        if (!user) {
+            throw new UnauthorizedException('unauthorized');
+        }
+        return user;
     }
 
     update(id: number, updateUserDto: UpdateUserDto) {
