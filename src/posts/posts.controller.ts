@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import {
     Controller,
     Get,
@@ -8,13 +9,17 @@ import {
     Delete,
     UseInterceptors,
     UploadedFiles,
+    ParseIntPipe,
     Req,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { ParseObjectIdPipe } from '@nestjs/mongoose';
+import mongoose from 'mongoose';
 import { Request } from 'express';
+import { ApiResponse } from 'src/types/api-response';
 
 @Controller('posts')
 export class PostsController {
@@ -30,23 +35,31 @@ export class PostsController {
         return this.postsService.create(request, createPostDto, files);
     }
 
-    @Get()
-    findAll() {
-        return this.postsService.findAll();
-    }
+    // @Get()
+    // findAll() {
+    //     return this.postsService.findAll();
+    // }
 
-    @Get(':id')
-    findOne(@Param('id') id: string) {
-        return this.postsService.findOne(+id);
-    }
+    // @Get(':id')
+    // findOne(@Param('id') id: string) {
+    //     return this.postsService.findOne(+id);
+    // }
 
     @Patch(':id')
-    update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
-        return this.postsService.update(+id, updatePostDto);
+    async update(
+        @Param('id', ParseObjectIdPipe) id: mongoose.Types.ObjectId,
+        @Body() updatePostDto: UpdatePostDto,
+        @Req() req: Request,
+    ) {
+        console.log('updatePostDto', updatePostDto);
+        return this.postsService.update(req, id, updatePostDto);
     }
 
     @Delete(':id')
-    remove(@Param('id') id: string) {
-        return this.postsService.remove(+id);
+    async remove(
+        @Param('id', ParseObjectIdPipe) id: mongoose.Types.ObjectId,
+        @Req() req: Request,
+    ): Promise<ApiResponse<null>> {
+        return await this.postsService.remove(req, id);
     }
 }

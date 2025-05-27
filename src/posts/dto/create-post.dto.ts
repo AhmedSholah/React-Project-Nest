@@ -42,8 +42,7 @@ export class CreatePostDto {
 
     @IsOptional()
     @IsArray()
-    // @ValidateNested({ each: true })
-    // @Type(() => MediaItemDto)
-    // media: MediaItemDto[];
-    media: any;
+    @ValidateNested({ each: true })
+    @Type(() => MediaItemDto)
+    media: MediaItemDto[];
 }

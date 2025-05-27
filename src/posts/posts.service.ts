@@ -2,7 +2,9 @@ import {
     HttpException,
     HttpStatus,
     Injectable,
+    NotFoundException,
     OnModuleInit,
+    UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {
@@ -14,7 +16,7 @@ import { CreatePostDto, MediaItemDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Post, PostDocument } from './entities/post.entity';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import { ApiResponse } from 'src/types/api-response';
 
@@ -49,11 +51,7 @@ export class PostsService implements OnModuleInit {
         });
     }
 
-    async create(
-        request,
-        createPostDto: CreatePostDto,
-        files,
-    ): Promise<ApiResponse<null>> {
+    async create(request, createPostDto: CreatePostDto, files) {
         const { userId } = request.user;
         let uploadedMedia: MediaItemDto[] = [];
         let newPost;
@@ -85,12 +83,9 @@ export class PostsService implements OnModuleInit {
                     type: fileType,
                 };
                 uploadedMedia.push(mediaItem);
-                // newPost.media.push(mediaItem);
+                newPost.media.push(mediaItem);
             }
-            newPost.media = uploadedMedia;
-
-            console.log(uploadedMedia);
-            // await newPost.save();
+            await newPost.save();
         } catch (err) {
             console.error('Create Post Error:', err);
             throw new HttpException(
@@ -106,19 +101,74 @@ export class PostsService implements OnModuleInit {
         };
     }
 
-    findAll() {
-        return `This action returns all posts`;
+    // findAll() {
+    //     return `This action returns all posts`;
+    // }
+
+    // findOne(id: number) {
+    //     return `This action returns a #${id} post`;
+    // }
+
+    async update(
+        req,
+        id: mongoose.Types.ObjectId,
+        updatePostDto: UpdatePostDto,
+    ): Promise<ApiResponse<any>> {
+        const { userId } = req.user;
+
+        const post = await this.postModel.findById(id);
+
+        if (!post) {
+            throw new NotFoundException('Post not found');
+        }
+
+        if (post.author.toString() !== userId) {
+            throw new UnauthorizedException(
+                'You are not authorized to update this post',
+            );
+        }
+
+        console.log('updatePostDto', updatePostDto);
+
+        const newPost = await this.postModel.findByIdAndUpdate(
+            id,
+            updatePostDto,
+            { new: true },
+        );
+
+        await post.save();
+
+        return {
+            success: true,
+            message: 'Post updated successfully',
+            data: newPost,
+        };
     }
 
-    findOne(id: number) {
-        return `This action returns a #${id} post`;
-    }
+    async remove(
+        request,
+        id: mongoose.Types.ObjectId,
+    ): Promise<ApiResponse<null>> {
+        const { userId } = request.user;
 
-    update(id: number, updatePostDto: UpdatePostDto) {
-        return `This action updates a #${id} post`;
-    }
+        const post = await this.postModel.findById(id);
 
-    remove(id: number) {
-        return `This action removes a #${id} post`;
+        if (!post) {
+            throw new NotFoundException('Post not found');
+        }
+
+        if (post.author.toString() !== userId) {
+            throw new UnauthorizedException(
+                'You are not authorized to delete this post',
+            );
+        }
+
+        await this.postModel.findByIdAndDelete(id);
+
+        return {
+            success: true,
+            message: 'Post deleted successfully',
+            data: null,
+        };
     }
 }
