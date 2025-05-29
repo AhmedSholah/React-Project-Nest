@@ -42,13 +42,13 @@ export class UsersService {
         return `This action returns all users`;
     }
 
-    async findOne(username: string) {
+    async findOne(email: string) {
         const user = await this.userModel
-            .findOne({ username })
+            .findOne({ email })
             .select('+password');
 
         if (!user) {
-            throw new UnauthorizedException();
+            throw new UnauthorizedException('Invalid credentials');
         }
         return user;
     }

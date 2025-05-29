@@ -27,7 +27,7 @@ export class MediaItemDto {
 export class CreatePostDto {
     @IsNotEmpty()
     @IsString()
-    @Length(3, 20)
+    @Length(3, 50)
     title: string;
 
     @IsNotEmpty()

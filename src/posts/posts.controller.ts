@@ -26,13 +26,14 @@ export class PostsController {
     constructor(private readonly postsService: PostsService) {}
 
     @Post()
-    @UseInterceptors(FilesInterceptor('files'))
+    @UseInterceptors(FilesInterceptor('media'))
     create(
         @Body() createPostDto: CreatePostDto,
         @Req() request: Request,
-        @UploadedFiles() files: Array<Express.Multer.File>,
+        @UploadedFiles() media: Array<Express.Multer.File>,
     ) {
-        return this.postsService.create(request, createPostDto, files);
+        console.log(media);
+        return this.postsService.create(request, createPostDto, media);
     }
 
     // @Get()
@@ -51,8 +52,9 @@ export class PostsController {
         @Body() updatePostDto: UpdatePostDto,
         @Req() req: Request,
     ) {
-        console.log('updatePostDto', updatePostDto);
-        return this.postsService.update(req, id, updatePostDto);
+        // console.log('updatePostDto', updatePostDto);
+        // return this.postsService.update(req, id, updatePostDto);
+        return updatePostDto;
     }
 
     @Delete(':id')

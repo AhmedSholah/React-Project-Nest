@@ -20,9 +20,7 @@ export class AuthService {
     }
 
     async login(loginAuthDto: LoginAuthDto): Promise<string> {
-        const user: any = await this.usersService.findOne(
-            loginAuthDto.username,
-        );
+        const user: any = await this.usersService.findOne(loginAuthDto.email);
 
         const isPasswordValid = await bcrypt.compare(
             loginAuthDto.password,
@@ -30,7 +28,7 @@ export class AuthService {
         );
 
         if (!isPasswordValid) {
-            throw new UnauthorizedException();
+            throw new UnauthorizedException('Invalid credentials');
         }
 
         const payload = { userId: user._id };
