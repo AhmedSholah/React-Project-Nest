@@ -36,10 +36,10 @@ export class PostsController {
         return this.postsService.create(request, createPostDto, media);
     }
 
-    // @Get()
-    // findAll() {
-    //     return this.postsService.findAll();
-    // }
+    @Get()
+    async findAll() {
+        return this.postsService.findAll();
+    }
 
     // @Get(':id')
     // findOne(@Param('id') id: string) {

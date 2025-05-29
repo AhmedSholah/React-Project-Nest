@@ -101,9 +101,14 @@ export class PostsService implements OnModuleInit {
         };
     }
 
-    // findAll() {
-    //     return `This action returns all posts`;
-    // }
+    async findAll(): Promise<ApiResponse<any>> {
+        const posts = await this.postModel.find();
+        return {
+            success: true,
+            message: 'Posts fetched successfully',
+            data: posts,
+        };
+    }
 
     // findOne(id: number) {
     //     return `This action returns a #${id} post`;

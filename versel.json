@@ -1,5 +1,6 @@
 {
     "version": 2,
+    "trailingSlash": false,
     "builds": [
         {
             "src": "dist/main.js",
@@ -7,6 +8,9 @@
         }
     ],
     "routes": [
+        {
+            "handle": "cors"
+        },
         {
             "src": "/(.*)",
             "dest": "/dist/main.js"
