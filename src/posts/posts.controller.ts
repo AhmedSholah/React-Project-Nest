@@ -33,7 +33,6 @@ export class PostsController {
         @Req() request: Request,
         @UploadedFiles() media: Array<Express.Multer.File>,
     ) {
-        console.log(media);
         return this.postsService.create(request, createPostDto, media);
     }
 
@@ -54,8 +53,9 @@ export class PostsController {
         @Param('id', ParseObjectIdPipe) id: mongoose.Types.ObjectId,
         @Body() updatePostDto: UpdatePostDto,
         @Req() req: Request,
+        @UploadedFiles() media: Array<Express.Multer.File>,
     ) {
-        return this.postsService.update(req, id, updatePostDto);
+        return this.postsService.update(req, id, updatePostDto, media);
     }
 
     @Delete(':id')

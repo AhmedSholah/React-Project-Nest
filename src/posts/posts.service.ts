@@ -130,6 +130,7 @@ export class PostsService implements OnModuleInit {
         req,
         id: mongoose.Types.ObjectId,
         updatePostDto: UpdatePostDto,
+        file,
     ): Promise<ApiResponse<any>> {
         const { userId } = req.user;
 
@@ -144,8 +145,6 @@ export class PostsService implements OnModuleInit {
                 'You are not authorized to update this post',
             );
         }
-
-        console.log('updatePostDto', updatePostDto);
 
         const newPost = await this.postModel.findByIdAndUpdate(
             id,

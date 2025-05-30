@@ -78,7 +78,7 @@ export class AuthController {
     ): Promise<ApiResponse<null>> {
         res.cookie('access_token', '', {
             httpOnly: true,
-            secure: true,
+            secure: false,
             sameSite: 'none',
             maxAge: 1,
         });
