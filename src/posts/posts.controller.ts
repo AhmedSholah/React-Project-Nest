@@ -20,6 +20,7 @@ import { ParseObjectIdPipe } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { Request } from 'express';
 import { ApiResponse } from 'src/types/api-response';
+import { PublicEndpoint } from 'src/auth/PublicEndpoint';
 
 @Controller('posts')
 export class PostsController {
@@ -36,25 +37,25 @@ export class PostsController {
         return this.postsService.create(request, createPostDto, media);
     }
 
+    @PublicEndpoint()
     @Get()
     async findAll() {
         return this.postsService.findAll();
     }
 
-    // @Get(':id')
-    // findOne(@Param('id') id: string) {
-    //     return this.postsService.findOne(+id);
-    // }
+    @Get(':id')
+    findOne(@Param('id', ParseObjectIdPipe) id: mongoose.Types.ObjectId) {
+        return this.postsService.findOne(id);
+    }
 
     @Patch(':id')
+    @UseInterceptors(FilesInterceptor('media'))
     async update(
         @Param('id', ParseObjectIdPipe) id: mongoose.Types.ObjectId,
         @Body() updatePostDto: UpdatePostDto,
         @Req() req: Request,
     ) {
-        // console.log('updatePostDto', updatePostDto);
-        // return this.postsService.update(req, id, updatePostDto);
-        return updatePostDto;
+        return this.postsService.update(req, id, updatePostDto);
     }
 
     @Delete(':id')

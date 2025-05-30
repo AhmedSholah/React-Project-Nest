@@ -37,6 +37,22 @@ export class AuthService {
         return access_token;
     }
 
+    async me(req) {
+        const { userId } = req.user;
+
+        const user = await this.usersService.findById(userId);
+
+        if (!user) {
+            throw new UnauthorizedException('Invalid credentials');
+        }
+
+        return {
+            success: true,
+            message: 'User fetched successfully',
+            data: user,
+        };
+    }
+
     async validateToken(token: string) {
         try {
             const decoded = await this.jwtService.verifyAsync(token);
@@ -45,5 +61,12 @@ export class AuthService {
             console.log(error);
             throw new UnauthorizedException('Invalid token');
         }
+    }
+
+    async logout() {
+        return {
+            success: true,
+            message: 'Logged out successfully',
+        };
     }
 }

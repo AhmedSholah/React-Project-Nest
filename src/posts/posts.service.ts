@@ -102,7 +102,9 @@ export class PostsService implements OnModuleInit {
     }
 
     async findAll(): Promise<ApiResponse<any>> {
-        const posts = await this.postModel.find();
+        const posts = await this.postModel.find().populate('author').sort({
+            createdAt: 'desc',
+        });
         return {
             success: true,
             message: 'Posts fetched successfully',
@@ -110,9 +112,19 @@ export class PostsService implements OnModuleInit {
         };
     }
 
-    // findOne(id: number) {
-    //     return `This action returns a #${id} post`;
-    // }
+    async findOne(id: mongoose.Types.ObjectId): Promise<ApiResponse<any>> {
+        const post = await this.postModel.findById(id);
+
+        if (!post) {
+            throw new NotFoundException('Post not found');
+        }
+
+        return {
+            success: true,
+            message: 'Post fetched successfully',
+            data: post,
+        };
+    }
 
     async update(
         req,

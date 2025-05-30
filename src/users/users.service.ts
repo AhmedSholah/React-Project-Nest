@@ -53,6 +53,16 @@ export class UsersService {
         return user;
     }
 
+    async findById(id: string) {
+        const user = await this.userModel.findById(id);
+
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
+        return user;
+    }
+
     update(id: number, updateUserDto: UpdateUserDto) {
         return `This action updates a #${id} user`;
     }

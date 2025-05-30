@@ -1,12 +1,12 @@
 import {
     Body,
     Controller,
+    Get,
     HttpCode,
     HttpStatus,
     Post,
+    Req,
     Res,
-    SetMetadata,
-    UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
@@ -61,6 +61,31 @@ export class AuthController {
         return {
             success: true,
             message: 'User logged in successfully',
+            data: null,
+        };
+    }
+
+    @Get('me')
+    async me(@Req() req): Promise<ApiResponse<any>> {
+        return await this.authService.me(req);
+    }
+
+    @PublicEndpoint()
+    @Post('logout')
+    @HttpCode(HttpStatus.OK)
+    async logout(
+        @Res({ passthrough: true }) res: Response,
+    ): Promise<ApiResponse<null>> {
+        res.cookie('access_token', '', {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'lax',
+            maxAge: 1,
+        });
+
+        return {
+            success: true,
+            message: 'User logged out successfully',
             data: null,
         };
     }
