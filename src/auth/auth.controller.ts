@@ -31,7 +31,7 @@ export class AuthController {
         res.cookie('access_token', token, {
             httpOnly: true,
             secure: false,
-            sameSite: 'lax',
+            sameSite: 'none',
             maxAge: 1000 * 60 * 60 * 24,
         });
 
@@ -78,7 +78,7 @@ export class AuthController {
     ): Promise<ApiResponse<null>> {
         res.cookie('access_token', '', {
             httpOnly: true,
-            secure: false,
+            secure: true,
             sameSite: 'none',
             maxAge: 1,
         });
