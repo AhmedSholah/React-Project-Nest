@@ -17,7 +17,10 @@ async function bootstrap() {
     app.useGlobalGuards(new JwtAuthGuard(authService));
     app.use(cookieParser());
     app.enableCors({
-        origin: 'http://localhost:5173',
+        origin: [
+            'http://localhost:5173',
+            'https://react-blog-rho-seven.vercel.app',
+        ],
         credentials: true,
     });
     await app.listen(process.env.PORT ?? 3000);
