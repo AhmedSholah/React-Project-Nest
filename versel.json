@@ -1,20 +1,15 @@
 {
-    "version": 2,
-    "trailingSlash": false,
-    "builds": [
-        {
-            "src": "dist/main.js",
-            "use": "@vercel/node",
-            "config": { "outputDirectory": "dist" }
-        }
-    ],
-    "routes": [
-        {
-            "handle": "cors"
-        },
-        {
-            "src": "/(.*)",
-            "dest": "/dist/main.js"
-        }
-    ]
+  "version": 2,
+  "builds": [
+    {
+      "src": "dist/main.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/dist/main.js"
+    }
+  ]
 }
