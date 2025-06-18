@@ -12,12 +12,16 @@ const posts_service_1 = require("./posts.service");
 const posts_controller_1 = require("./posts.controller");
 const mongoose_1 = require("@nestjs/mongoose");
 const post_entity_1 = require("./entities/post.entity");
+const comments_module_1 = require("../comments/comments.module");
+const reactions_module_1 = require("../reactions/reactions.module");
 let PostsModule = class PostsModule {
 };
 exports.PostsModule = PostsModule;
 exports.PostsModule = PostsModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            comments_module_1.CommentsModule,
+            reactions_module_1.ReactionsModule,
             mongoose_1.MongooseModule.forFeature([{ name: post_entity_1.Post.name, schema: post_entity_1.PostSchema }]),
         ],
         controllers: [posts_controller_1.PostsController],

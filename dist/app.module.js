@@ -16,6 +16,8 @@ const auth_module_1 = require("./auth/auth.module");
 const config_1 = require("@nestjs/config");
 const comments_module_1 = require("./comments/comments.module");
 const posts_module_1 = require("./posts/posts.module");
+const reactions_module_1 = require("./reactions/reactions.module");
+const post_share_module_1 = require("./post-share/post-share.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -28,6 +30,8 @@ exports.AppModule = AppModule = __decorate([
             comments_module_1.CommentsModule,
             posts_module_1.PostsModule,
             auth_module_1.AuthModule,
+            reactions_module_1.ReactionsModule,
+            post_share_module_1.PostShareModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

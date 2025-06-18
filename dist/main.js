@@ -18,11 +18,12 @@ async function bootstrap() {
     app.enableCors({
         origin: [
             'http://localhost:5173',
-            'https://react-blog-rho-seven.vercel.app',
+            'https://blogify-react-app.vercel.app',
         ],
         credentials: true,
     });
     await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
+exports.default = bootstrap;
 //# sourceMappingURL=main.js.map

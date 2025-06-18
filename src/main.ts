@@ -19,7 +19,7 @@ async function bootstrap() {
     app.enableCors({
         origin: [
             'http://localhost:5173',
-            'https://react-blog-rho-seven.vercel.app',
+            'https://blogify-react-app.vercel.app',
         ],
         credentials: true,
     });
@@ -27,3 +27,5 @@ async function bootstrap() {
     // await app.listen(3000);
 }
 bootstrap();
+
+export default bootstrap;

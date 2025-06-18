@@ -1,26 +1,56 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Comment, CommentDocument } from './entities/comment.entity';
+import mongoose, { Model } from 'mongoose';
+import { ApiResponse } from 'src/types/api-response';
 
 @Injectable()
 export class CommentsService {
-  create(createCommentDto: CreateCommentDto) {
-    return 'This action adds a new comment';
-  }
+    constructor(
+        @InjectModel(Comment.name) private commentModel: Model<CommentDocument>,
+    ) {}
 
-  findAll() {
-    return `This action returns all comments`;
-  }
+    async create(
+        createCommentDto: CreateCommentDto,
+    ): Promise<ApiResponse<null>> {
+        const comment = new this.commentModel(createCommentDto);
+        await comment.save();
 
-  findOne(id: number) {
-    return `This action returns a #${id} comment`;
-  }
+        return {
+            success: true,
+            message: 'Comment created successfully',
+            data: null,
+        };
+    }
+    async findAll(postId: mongoose.Types.ObjectId): Promise<ApiResponse<any>> {
+        const comments = await this.commentModel
+            .find({ post: postId })
+            .populate('author')
+            .sort({ createdAt: 'desc' });
 
-  update(id: number, updateCommentDto: UpdateCommentDto) {
-    return `This action updates a #${id} comment`;
-  }
+        const count = await this.commentModel.countDocuments({ post: postId });
 
-  remove(id: number) {
-    return `This action removes a #${id} comment`;
-  }
+        return {
+            success: true,
+            message: 'Comments fetched successfully',
+            data: {
+                comments,
+                count,
+            },
+        };
+    }
+
+    findOne(id: number) {
+        return `This action returns a #${id} comment`;
+    }
+
+    update(id: number, updateCommentDto: UpdateCommentDto) {
+        return `This action updates a #${id} comment`;
+    }
+
+    remove(id: number) {
+        return `This action removes a #${id} comment`;
+    }
 }

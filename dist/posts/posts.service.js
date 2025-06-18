@@ -13,6 +13,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostsService = void 0;
+const comments_service_1 = require("./../comments/comments.service");
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const client_s3_1 = require("@aws-sdk/client-s3");
@@ -22,10 +23,12 @@ const mongoose_2 = require("mongoose");
 const uuid_1 = require("uuid");
 let PostsService = class PostsService {
     configService;
+    commentsService;
     postModel;
     s3Client;
-    constructor(configService, postModel) {
+    constructor(configService, commentsService, postModel) {
         this.configService = configService;
+        this.commentsService = commentsService;
         this.postModel = postModel;
     }
     onModuleInit() {
@@ -45,7 +48,7 @@ let PostsService = class PostsService {
     }
     async create(request, createPostDto, files) {
         const { userId } = request.user;
-        let uploadedMedia = [];
+        const uploadedMedia = [];
         let newPost;
         try {
             newPost = new this.postModel({
@@ -141,12 +144,16 @@ let PostsService = class PostsService {
             data: null,
         };
     }
+    async findAllComments(id) {
+        return await this.commentsService.findAll(id);
+    }
 };
 exports.PostsService = PostsService;
 exports.PostsService = PostsService = __decorate([
     (0, common_1.Injectable)(),
-    __param(1, (0, mongoose_1.InjectModel)(post_entity_1.Post.name)),
+    __param(2, (0, mongoose_1.InjectModel)(post_entity_1.Post.name)),
     __metadata("design:paramtypes", [config_1.ConfigService,
+        comments_service_1.CommentsService,
         mongoose_2.Model])
 ], PostsService);
 //# sourceMappingURL=posts.service.js.map

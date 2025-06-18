@@ -25,9 +25,6 @@ let CommentsController = class CommentsController {
     create(createCommentDto) {
         return this.commentsService.create(createCommentDto);
     }
-    findAll() {
-        return this.commentsService.findAll();
-    }
     findOne(id) {
         return this.commentsService.findOne(+id);
     }
@@ -46,12 +43,6 @@ __decorate([
     __metadata("design:paramtypes", [create_comment_dto_1.CreateCommentDto]),
     __metadata("design:returntype", void 0)
 ], CommentsController.prototype, "create", null);
-__decorate([
-    (0, common_1.Get)(),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], CommentsController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),

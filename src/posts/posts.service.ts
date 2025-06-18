@@ -1,3 +1,4 @@
+import { CommentsService } from './../comments/comments.service';
 import {
     HttpException,
     HttpStatus,
@@ -7,11 +8,7 @@ import {
     UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import {
-    DeleteObjectCommand,
-    PutObjectCommand,
-    S3Client,
-} from '@aws-sdk/client-s3';
+import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { CreatePostDto, MediaItemDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -26,6 +23,7 @@ export class PostsService implements OnModuleInit {
 
     constructor(
         private configService: ConfigService,
+        private readonly commentsService: CommentsService,
         @InjectModel(Post.name) private postModel: Model<PostDocument>,
     ) {}
 
@@ -53,7 +51,7 @@ export class PostsService implements OnModuleInit {
 
     async create(request, createPostDto: CreatePostDto, files) {
         const { userId } = request.user;
-        let uploadedMedia: MediaItemDto[] = [];
+        const uploadedMedia: MediaItemDto[] = [];
         let newPost;
         try {
             newPost = new this.postModel({
@@ -105,6 +103,7 @@ export class PostsService implements OnModuleInit {
         const posts = await this.postModel.find().populate('author').sort({
             createdAt: 'desc',
         });
+
         return {
             success: true,
             message: 'Posts fetched successfully',
@@ -186,5 +185,9 @@ export class PostsService implements OnModuleInit {
             message: 'Post deleted successfully',
             data: null,
         };
+    }
+
+    async findAllComments(id: mongoose.Types.ObjectId) {
+        return await this.commentsService.findAll(id);
     }
 }

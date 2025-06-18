@@ -21,10 +21,13 @@ const platform_express_1 = require("@nestjs/platform-express");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const PublicEndpoint_1 = require("../auth/PublicEndpoint");
+const reactions_service_1 = require("../reactions/reactions.service");
 let PostsController = class PostsController {
     postsService;
-    constructor(postsService) {
+    reactionsService;
+    constructor(postsService, reactionsService) {
         this.postsService = postsService;
+        this.reactionsService = reactionsService;
     }
     create(createPostDto, request, media) {
         return this.postsService.create(request, createPostDto, media);
@@ -40,6 +43,9 @@ let PostsController = class PostsController {
     }
     async remove(id, req) {
         return await this.postsService.remove(req, id);
+    }
+    async findAllComments(id) {
+        return await this.postsService.findAllComments(id);
     }
 };
 exports.PostsController = PostsController;
@@ -86,8 +92,16 @@ __decorate([
     __metadata("design:paramtypes", [mongoose_2.default.Types.ObjectId, Object]),
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "remove", null);
+__decorate([
+    (0, common_1.Get)(':id/comments'),
+    __param(0, (0, common_1.Param)('id', mongoose_1.ParseObjectIdPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [mongoose_2.default.Types.ObjectId]),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "findAllComments", null);
 exports.PostsController = PostsController = __decorate([
     (0, common_1.Controller)('posts'),
-    __metadata("design:paramtypes", [posts_service_1.PostsService])
+    __metadata("design:paramtypes", [posts_service_1.PostsService,
+        reactions_service_1.ReactionsService])
 ], PostsController);
 //# sourceMappingURL=posts.controller.js.map

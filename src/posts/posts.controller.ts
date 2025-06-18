@@ -21,10 +21,15 @@ import mongoose from 'mongoose';
 import { Request } from 'express';
 import { ApiResponse } from 'src/types/api-response';
 import { PublicEndpoint } from 'src/auth/PublicEndpoint';
+import { ReactionsService } from 'src/reactions/reactions.service';
+import { CreateReactionDto } from 'src/reactions/dto/create-reaction.dto';
 
 @Controller('posts')
 export class PostsController {
-    constructor(private readonly postsService: PostsService) {}
+    constructor(
+        private readonly postsService: PostsService,
+        private readonly reactionsService: ReactionsService,
+    ) {}
 
     @Post()
     @UseInterceptors(FilesInterceptor('media'))
@@ -64,5 +69,12 @@ export class PostsController {
         @Req() req: Request,
     ): Promise<ApiResponse<null>> {
         return await this.postsService.remove(req, id);
+    }
+
+    @Get(':id/comments')
+    async findAllComments(
+        @Param('id', ParseObjectIdPipe) id: mongoose.Types.ObjectId,
+    ) {
+        return await this.postsService.findAllComments(id);
     }
 }
